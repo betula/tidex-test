@@ -6,9 +6,6 @@ export default class Chart {
   private width: number;
   private height: number;
 
-  time: number[];
-  main: any;
-
   constructor(
     canvasElement: HTMLCanvasElement,
     private data: Data
@@ -19,6 +16,10 @@ export default class Chart {
   }
 
   draw() {
+    this.drawData();
+  }
+
+  drawData() {
     const
       paddingLeft = 2,
       paddingRight = 100,
@@ -53,7 +54,7 @@ export default class Chart {
         cellOffsets = getCellOffsets(index),
         cellLeft = cellOffsets.left,
         cellWidth = cellOffsets.width,
-        cellMiddle = Math.round(cellLeft + cellWidth / 2),
+        cellMiddle = cellLeft + cellWidth / 2,
         color = data.c[index] < data.o[index]
           ? 'rgb(198, 65, 72)'
           : 'rgb(5, 140, 108)'
@@ -69,15 +70,20 @@ export default class Chart {
       ;
 
       ctx.beginPath();
-      ctx.moveTo(cellMiddle + .5, translateY(h));
-      ctx.lineTo(cellMiddle + .5, translateY(l));
+      ctx.moveTo(Math.round(cellMiddle) + .5, Math.round(translateY(h)));
+      ctx.lineTo(Math.round(cellMiddle) + .5, Math.round(translateY(l)));
       ctx.lineWidth = 1;
       ctx.strokeStyle = color;
       ctx.stroke();
       ctx.closePath();
 
       ctx.fillStyle = color;
-      ctx.fillRect(cellLeft + .5, bodyBottom + .5, cellWidth, bodyTop - bodyBottom);
+      ctx.fillRect(
+        Math.round(cellLeft),
+        Math.round(bodyBottom),
+        Math.round(cellWidth),
+        Math.round(bodyTop - bodyBottom)
+      );
     }
 
     function drawValue(index) {
@@ -109,8 +115,12 @@ export default class Chart {
       ctx.lineWidth = 1;
       ctx.strokeStyle = strokeColor;
       ctx.fillStyle = fillColor;
-      ctx.fillRect(cellLeft + .5, bottom + .5, cellWidth, top - bottom);
-
+      ctx.fillRect(
+        Math.round(cellLeft),
+        Math.round(bottom),
+        Math.round(cellWidth),
+        Math.round(top - bottom)
+      );
     }
 
     for(let i = 0; i < data.t.length; i++) {
@@ -118,5 +128,6 @@ export default class Chart {
       drawValue(i);
     }
   }
+
 
 }
